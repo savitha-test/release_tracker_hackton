@@ -113,16 +113,6 @@ if st.button("Run Analysis"):
 
         st.dataframe(df, use_container_width=True)
 
-<<<<<<< HEAD
-        st.subheader("US per Service")
-        grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
-        st.dataframe(grouped)
-
-=======
-        st.subheader("US Per Service")
-        grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
-
-        st.dataframe(grouped)
         st.subheader("US Per Service")
         grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
 
@@ -137,3 +127,11 @@ if st.button("Run Analysis"):
             st.header(f"Repo: {repo}")
             st.subheader("📊 Release Summary")
             st.markdown(summary)
+
+        st.download_button(
+            "Download CSV",
+            df.to_csv(index=False),
+            "release_report.csv"
+        )
+    else:
+        st.warning("No data found")
