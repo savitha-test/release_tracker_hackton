@@ -6,6 +6,8 @@ import streamlit as st
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 
+from jira_service import get_jira_issues
+from release_summary import generate_release_summary
 from utils.config_loader import load_properties
 from services.bitbucket_service import fetch_release_data, get_headers
 
@@ -92,14 +94,12 @@ if st.button("Run Analysis"):
 
     headers = get_headers(username, app_password)
     with st.spinner("Fetching data..."):
-    # fetch_release_data(workspace, repos, current_branch, headers, start_date, previous_branch):
         data = fetch_release_data(
             workspace,
             repos,
             branch,
             headers,
-            formatted_start_date,
-            None  # No comparison needed - show all commits
+            formatted_start_date
         )
 
     if data:
@@ -113,14 +113,27 @@ if st.button("Run Analysis"):
 
         st.dataframe(df, use_container_width=True)
 
+<<<<<<< HEAD
         st.subheader("US per Service")
         grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
         st.dataframe(grouped)
 
-        st.download_button(
-            "Download CSV",
-            df.to_csv(index=False),
-            "release_report.csv"
-        )
-    else:
-        st.warning("No data found")
+=======
+        st.subheader("US Per Service")
+        grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
+
+        st.dataframe(grouped)
+        st.subheader("US Per Service")
+        grouped = df.groupby("repo")["us_id"].apply(list).reset_index()
+
+        st.dataframe(grouped)
+
+        for repo, us_ids in zip(grouped["repo"], grouped["us_id"]):
+            issues = get_jira_issues(us_ids)
+            summary = generate_release_summary(issues)
+
+            print(f"Repo: {repo}")
+            print(summary)
+            st.header(f"Repo: {repo}")
+            st.subheader("📊 Release Summary")
+            st.markdown(summary)
