@@ -1,6 +1,11 @@
 from openai import OpenAI
 
-client = OpenAI(api_key=" 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")
+from utils.config_loader import load_properties
+
+config = load_properties("config/config.properties")
+api_key = config["openAI"]
+client = OpenAI(api_key=api_key)
+enableAI=config["enableAI"]
 
 
 def generate_release_summary(issues):
@@ -42,13 +47,22 @@ Jira Issues:
 {issues_text}
 """
 
-    response = client.chat.completions.create(
+    # GEN AI
+    def to_bool(val):
+        return str(val).strip().lower() in ("true", "1", "yes")
+
+    enableAI_flag =  to_bool(enableAI)
+
+    print(enableAI_flag)
+    if enableAI_flag:
+        response = client.chat.completions.create(
         model="gpt-4.1",
         messages=[
             {"role": "system", "content": "You create crisp, executive-level release summaries."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.3
-    )
+        )
 
-    return response.choices[0].message.content
+        return response.choices[0].message.content
+
