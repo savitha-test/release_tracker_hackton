@@ -1,27 +1,28 @@
-from utils.config_loader import load_properties
-from services.bitbucket_service import fetch_release_data, get_headers
-import csv
+import streamlit as st
 
-def run():
-    config = load_properties("config/config.properties")
+from deployment_dashboard import deployment_status_dashboard
+from style import load_css
+from app import show_release_dashboard
 
-    workspace = config["bitbucket.workspace"]
-    username = config["bitbucket.username"]
-    app_password = config["bitbucket.app_password"]
-    branch = config["release.branch"]
-    repos = [r.strip() for r in config["repos"].split(",")]
 
-    headers = get_headers(username, app_password)
+st.set_page_config(
+    page_title="Release Intelligence Dashboard",
+    page_icon="🚀",
+    layout="wide"
+)
 
-    data = fetch_release_data(workspace, repos, branch, headers)
+load_css()
 
-    for r in data:
-        print(f"{r['repo']} | {r['us_id']} | {r['date']}")
+st.title("🚀 Release Intelligence Platform")
+st.caption("AI-powered release and deployment insights")
 
-    with open("release_report.csv", "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=["repo", "us_id", "commit", "date", "release"])
-        writer.writeheader()
-        writer.writerows(data)
+tab1, tab2 = st.tabs([
+    "🚦 Staging Deployment Readiness",
+    "🚀 Release Dashboard"
+])
 
-if __name__ == "__main__":
-    run()
+with tab1:
+    deployment_status_dashboard()
+
+with tab2:
+    show_release_dashboard()

@@ -80,7 +80,7 @@ def fetch_release_data(workspace, repos, current_branch, headers, start_date, pr
 
             for commit in data.get("values", []):
                 commit_hash = commit.get("hash")
-                
+
                 # Skip if this commit exists in previous branch (already released)
                 if commit_hash in excluded_commits:
                     continue
@@ -96,11 +96,10 @@ def fetch_release_data(workspace, repos, current_branch, headers, start_date, pr
 
                 for us in us_ids:
                     results.append({
-                        "repo": repo,
-                        "us_id": us,
-                        "commit": commit.get("hash"),
-                        "date": commit.get("date"),
-                        "release": current_branch
+                        "Repository": repo,
+                        "User Stories": us,
+                        "Date": commit.get("date"),
+
                     })
 
             if stop_pagination:
@@ -110,6 +109,6 @@ def fetch_release_data(workspace, repos, current_branch, headers, start_date, pr
             url = data.get("next")
 
     # -------- Deduplicate --------
-    unique = {(r["repo"], r["us_id"]): r for r in results}.values()
+    unique = {(r["Repository"], r["User Stories"]): r for r in results}.values()
     print(f"Fetched {len(unique)} unique results for {current_branch}...")
     return list(unique)

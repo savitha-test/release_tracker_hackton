@@ -29,7 +29,8 @@ def get_jira_issues(issue_keys):
                 "description",
                 "issuetype",
                 "status",
-                "customfield_10057"  # acceptance criteria
+                "customfield_10057",  # acceptance criteria
+                "priority"
             ]
         },
         params={"jql": jql},
@@ -41,7 +42,7 @@ def get_jira_issues(issue_keys):
     issues = []
     for issue in data.get("issues", []):
         fields = issue["fields"]
-        print("type " ,fields.get("issuetype", {}).get("name") )
+
         issue_type=fields.get("issuetype", {}).get("name")
         if issue_type == "Bug" or issue_type == "Story":
          issues.append({
@@ -51,6 +52,7 @@ def get_jira_issues(issue_keys):
             "acceptance_criteria": extract_adf_text(fields.get("customfield_10057")),
             "type": fields.get("issuetype", {}).get("name"),
             "status": fields.get("status", {}).get("name"),
+            "priority": fields.get("priority", {}).get("name"),
          })
 
     return issues
