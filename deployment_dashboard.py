@@ -5,15 +5,15 @@ import pandas as pd
 def deployment_status_dashboard():
     st.title("Stage Deployment Dashboard - May 2026")
     data = [
-        {"Service": "auth-service", "Version": "v3.4.1", "Dev": "✅", "Stg": "✅", "Prod": "✅", "Tests": "✅", 
+        {"Service": "auth-service", "Hard Version": "v3.4.1", "Stg": "✅", "Prod": "✅", "Tests": "✅",
          "Approval": "✅", "Status": "Go"},
-        {"Service": "data-pipeline", "Version": "v2.1.0", "Dev": "✅", "Stg": "✅", "Prod": "✅", "Tests": "✅",
+        {"Service": "data-pipeline", "Hard Version": "v2.1.0",  "Stg": "✅", "Prod": "✅", "Tests": "✅",
           "Approval": "✅",   "Status": "Go"},
-        {"Service": "notification-svc", "Version": "v1.8.3", "Dev": "✅", "Stg": "✅", "Prod": "—", "Tests": "✅",
+        {"Service": "notification-svc", "Hard Version": "v1.8.3",  "Stg": "✅", "Prod": "—", "Tests": "✅",
          "Approval": "⏳",   "Status": "No-go"},
-        {"Service": "report-engine", "Version": "v4.0.0", "Dev": "✅", "Stg": "✅", "Prod": "—", "Tests": "❌",
+        {"Service": "report-engine", "Hard Version": "v4.0.0",   "Stg": "✅", "Prod": "—", "Tests": "❌",
          "Approval": "❌",  "Status": "No-go"},
-        {"Service": "tenant-router", "Version": "v3.1.5", "Dev": "✅", "Stg": "—", "Prod": "—", "Tests": "✅",
+        {"Service": "tenant-router", "Hard Version": "v3.1.5",   "Stg": "—", "Prod": "—", "Tests": "✅",
           "Approval": "⏳",   "Status": "Hold"},
     ]
 

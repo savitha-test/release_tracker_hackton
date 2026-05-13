@@ -96,6 +96,7 @@ def load_css():
         color: #475569 !important;
         font-weight: 700 !important;
         font-size: 15px !important;
+      
     }
 
     .stSelectbox div[data-baseweb="select"],

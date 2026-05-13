@@ -1,8 +1,8 @@
 import streamlit as st
-
+from PIL import Image
 from deployment_dashboard import deployment_status_dashboard
 from style import load_css
-from app import show_release_dashboard
+from release_dashboard import show_release_dashboard
 
 
 st.set_page_config(
@@ -12,8 +12,13 @@ st.set_page_config(
 )
 
 load_css()
-
-st.title("🚀 Release Intelligence Platform")
+img=Image.open("./images/logo.png").convert("RGBA")
+imgCol, titleCol = st.columns([1, 6])
+with imgCol:
+    st.image(img, width=80)
+with titleCol:
+    st.title("Release Intelligence Platform")
+#st.title(img,"Release Intelligence Platform")
 st.caption("AI-powered release and deployment insights")
 
 tab1, tab2 = st.tabs([
@@ -22,7 +27,9 @@ tab1, tab2 = st.tabs([
 ])
 
 with tab1:
-    deployment_status_dashboard()
+    with st.container():
+     deployment_status_dashboard()
 
 with tab2:
-    show_release_dashboard()
+    with st.container():
+        show_release_dashboard()
