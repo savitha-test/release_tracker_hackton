@@ -71,10 +71,16 @@ def show_repo_metrics(df_issues):
     col3.metric("📊 Total", total_count)
 
 
-def show_repo_section(repo, us_ids):
+def show_repo_section(repo, us_ids, current_version=None):
     final_df, df_issues = prepare_repo_issues(repo, us_ids)
+    
+    # Create header with version info
+    if current_version:
+        header = f"📦 {repo} — 🚀 Stage: {current_version}"
+    else:
+        header = f"📦 {repo}"
 
-    with st.expander(f"📦 {repo}", expanded=False):
+    with st.expander(header, expanded=False):
         show_repo_metrics(df_issues)
         st.dataframe(final_df, use_container_width=True, height=360)
 
@@ -94,7 +100,7 @@ def get_all_branches(workspace, repo, username, app_password):
     branches_all = []
 
     while url:
-        response = requests.get(url, auth=(username, app_password))
+        response = requests.get(url, auth=(username, app_password), verify=False)
         data = response.json()
         branches_all.extend(data.get("values", []))
         url = data.get("next")
@@ -130,6 +136,14 @@ def filter_release_branches(branches):
 # ==============================================================
 
 def show_release_dashboard():
+    # Fetch current deployed versions from stage cluster
+    try:
+        with st.spinner("Fetching current deployments from stage..."):
+            stage_services = get_all_services_from_cluster(EKS_STAGE_CLUSTER, EKS_STAGE_NAMESPACE)
+    except Exception as e:
+        st.warning(f"⚠️ Could not fetch EKS stage data: {str(e)}")
+        stage_services = {}
+    
     branches = get_all_branches(workspace, "ng-platform-ui", username, app_password)
     filtered = filter_release_branches(branches)
 
@@ -184,7 +198,21 @@ def show_release_dashboard():
             metric_col2.metric("📘 Total Jira Issues", len(df))
 
             for repo, us_ids in zip(grouped["Repository"], grouped["User Stories"]):
-                show_repo_section(repo, us_ids)
+                # Get current version for this repo with robust name matching
+                current_version = None
+                
+                # Try multiple name variations
+                current_version = stage_services.get(repo)
+                if not current_version:
+                    current_version = stage_services.get(repo.replace('_', '-'))
+                if not current_version:
+                    current_version = stage_services.get(repo.replace('-', '_'))
+                if not current_version:
+                    current_version = stage_services.get(repo.lower())
+                if not current_version:
+                    current_version = stage_services.get(repo.lower().replace('_', '-'))
+                
+                show_repo_section(repo, us_ids, current_version)
 
         var = st.divider()
         summary = generate_release_summary(st.session_state.allJira_issues)
