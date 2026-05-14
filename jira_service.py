@@ -1,8 +1,12 @@
 import requests
+import urllib3
 from requests.auth import HTTPBasicAuth
 
 from release_summary import generate_release_summary
 from utils.config_loader import load_properties
+
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 config = load_properties("config/config.properties")
 JIRA_BASE_URL = config["jira.domain"]
@@ -34,7 +38,8 @@ def get_jira_issues(issue_keys):
             ]
         },
         params={"jql": jql},
-        auth=HTTPBasicAuth(EMAIL, API_TOKEN)
+        auth=HTTPBasicAuth(EMAIL, API_TOKEN),
+        verify=False
     )
     print(response.status_code)
     data = response.json()

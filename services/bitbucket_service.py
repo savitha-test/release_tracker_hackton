@@ -1,8 +1,12 @@
 import base64
 import requests
+import urllib3
 from datetime import datetime
 
 from services.parser import extract_us_ids
+
+# Disable SSL warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def get_headers(username, app_password):
@@ -24,7 +28,7 @@ def fetch_commits_from_branch(workspace, repo, branch, headers, start_date=None)
         start_dt = datetime.fromisoformat(start_date.replace("Z", "+00:00"))
     
     while url:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, verify=False)
         if response.status_code != 200:
             break
         
@@ -69,7 +73,7 @@ def fetch_release_data(workspace, repos, current_branch, headers, start_date, pr
 
 
         while url:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, verify=False)
 
             if response.status_code != 200:
                 print(f"Error for repo {repo}: {response.status_code}")
