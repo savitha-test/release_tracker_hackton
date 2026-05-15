@@ -12,30 +12,7 @@ RELEASE_BRANCH = config.get("release.branch", "master")
 def deployment_status_dashboard():
     st.title("Stage Deployment Dashboard - May 2026")
     
-    # Show configuration info
-    with st.expander("ℹ️ About AT Test Results"):
-        st.markdown("""
-        **Go/No-go Status** is determined by **Acceptance Test (AT) build results** from Bitbucket:
-        - **✅ Passed**: AT build completed successfully (green) - **Go**
-        - **❌ Failed**: AT build failed - **No-go**
-        - **⏳ In Progress**: AT build currently running - **No-go**
-        - **🔍 Not Found**: No AT build found - **No-go**
-        - **🔒 No Access**: Repository not accessible or doesn't exist - **No-go**
-        
-        **How it works:**  
-        The system fetches the latest commit on the release branch, then checks the **Builds section** 
-        of that commit for the AT test build named `{service-name} - Acceptance`. For example:
-        - Service `authentication` → Build `authentication - Acceptance`
-        - Service `audit-api` → Build `audit-api - Acceptance`
-        
-        If the build status is "green" (SUCCESSFUL), the AT test is marked as **Passed**.
-        
-        **Note**: 🔒 No Access typically means:
-        - Repository doesn't exist in Bitbucket workspace
-        - Incorrect Bitbucket credentials
-        - Your account doesn't have permission to access the repository
-        """)
-    
+
     # Fetch service versions from EKS clusters
     with st.spinner("Fetching data from EKS clusters..."):
         try:
